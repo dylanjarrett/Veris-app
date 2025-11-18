@@ -1,7 +1,6 @@
 // src/mock/verisMock.ts
-import { VerisIntelligencePack } from "../types/veris";
 
-export const MOCK_PACK: VerisIntelligencePack = {
+export const MOCK_PACK = {
   listing: {
     long:
       "Welcome to 1234 Ocean View Drive, a modern coastal retreat in the heart of San Diego. This light-filled 3-bedroom, 2.5-bath home features an open-concept main level with wide-plank flooring, a sleek chef’s kitchen with quartz countertops and stainless appliances, and a seamless flow to the outdoor patio. Floor-to-ceiling windows frame neighborhood and sunset views, while the private backyard offers space for dining, lounging, and play. Upstairs, the spacious primary suite includes a walk-in closet and spa-like bath with dual vanities and a large walk-in shower. Two additional bedrooms, a flexible loft space, and upstairs laundry keep everyday living convenient. Located minutes from beaches, shops, and dining, this home combines modern finishes with a highly walkable location.",
