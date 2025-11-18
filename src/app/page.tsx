@@ -313,7 +313,7 @@ export default function VerisPage() {
           <img
             src="/veris-logo-wordmark.png"
             alt="Veris Automation"
-            className="w-[220px] max-w-full h-auto"
+            className="w-[180px] max-w-full h-auto"
           />
         </div>
         <div className="space-y-1 text-right">
@@ -321,9 +321,7 @@ export default function VerisPage() {
             Private agent preview
           </span>
           <p className="text-xs text-[#AAB4C0]">
-            Listing & seller workflows — tuned for real-estate teams
-            who want consistent, on-brand communication without
-            rewriting from scratch.
+            Your AI Advantage in Real Estate.
           </p>
         </div>
       </header>
@@ -332,10 +330,10 @@ export default function VerisPage() {
       <section className="mb-8 space-y-4">
         <div>
           <p className="text-[11px] uppercase tracking-[0.25em] text-[#AAB4C0]">
-            Workspace · AI powered
+          Veris • Real Estate Agent
           </p>
           <h1 className="mt-1 text-2xl font-semibold">
-            Choose a workflow. Switch anytime without losing progress.
+            Choose a workflow.
           </h1>
         </div>
 
