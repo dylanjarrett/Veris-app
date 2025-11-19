@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { MOCK_PACK } from "../mock/verisMock";
+import AppShell from "@/components/AppShell";
 
 // ----- Types -----
 
@@ -305,32 +306,13 @@ export default function VerisPage() {
 
   // ----- Render -----
 
-  return (
-    <main className="min-h-screen bg-[#050814] text-white px-4 py-6 md:px-10 lg:px-20">
-      {/* HEADER */}
-      <header className="mb-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div className="flex items-center gap-3">
-          <img
-            src="/veris-logo-wordmark.png"
-            alt="Veris Automation"
-            className="w-[180px] max-w-full h-auto"
-          />
-        </div>
-        <div className="space-y-1 text-right">
-          <span className="inline-flex items-center rounded-full border border-white/20 px-3 py-1 text-[11px] uppercase tracking-wide text-[#AAB4C0]">
-            Private agent preview
-          </span>
-          <p className="text-xs text-[#AAB4C0]">
-            Your AI Advantage in Real Estate.
-          </p>
-        </div>
-      </header>
-
+ return (
+    <AppShell>
       {/* WORKSPACE INTRO */}
       <section className="mb-8 space-y-4">
         <div>
           <p className="text-[11px] uppercase tracking-[0.25em] text-[#AAB4C0]">
-          Veris • Real Estate Agent
+            Veris • AI Tools for Real Estate
           </p>
           <h1 className="mt-1 text-2xl font-semibold">
             Choose a workflow.
@@ -455,7 +437,7 @@ export default function VerisPage() {
           </div>
         )}
       </section>
-    </main>
+    </AppShell>
   );
 }
 
