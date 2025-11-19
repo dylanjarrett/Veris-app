@@ -56,8 +56,7 @@ export default function LoginPage() {
         <div className="rounded-2xl border border-white/10 bg-[#0A0C14]/95 p-6 shadow-[0_0_30px_rgba(0,0,0,0.7)]">
           <h1 className="text-xl font-semibold mb-1">Welcome back</h1>
           <p className="text-xs text-[#AAB4C0] mb-6">
-            Sign in to access your Veris workspace, seller tools, and saved
-            listings.
+            Sign in to access your Veris workspace.
           </p>
 
           {error && (

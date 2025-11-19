@@ -1,5 +1,4 @@
-// src/app/api/[...nextauth]/route.ts
-
+// src/lib/auth.ts
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -13,6 +12,7 @@ import type { Session, User } from "next-auth";
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
 
+  // JWT-based sessions (no Session rows in DB, that’s fine)
   session: { strategy: "jwt" },
 
   pages: {
@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
         const isValid = await compare(credentials.password, user.passwordHash);
         if (!isValid) return null;
 
-        // Return minimal user object
+        // Minimal user object for JWT
         return {
           id: user.id,
           email: user.email,
@@ -64,10 +64,10 @@ export const authOptions: NextAuthOptions = {
     // ================================
     // Apple OAuth
     // ================================
-    AppleProvider({
-      clientId: process.env.APPLE_CLIENT_ID ?? "",
-      clientSecret: process.env.APPLE_CLIENT_SECRET ?? "",
-    }),
+   // AppleProvider({
+    //  clientId: process.env.APPLE_CLIENT_ID ?? "",
+  //    clientSecret: process.env.APPLE_CLIENT_SECRET ?? "",
+  //  }),
   ],
 
   // ================================
@@ -76,7 +76,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: User | null }) {
       if (user?.id) {
-        token.id = user.id;
+        (token as any).id = user.id;
       }
       return token;
     },
@@ -88,14 +88,12 @@ export const authOptions: NextAuthOptions = {
       session: Session;
       token: JWT;
     }) {
-      if (session.user && token.id) {
-        session.user.id = token.id;
+      if (session.user && (token as any).id) {
+        (session.user as any).id = (token as any).id;
       }
       return session;
     },
   },
 };
 
-// Export handlers for Next.js App Router
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+export default authOptions;
