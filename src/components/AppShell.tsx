@@ -61,45 +61,45 @@ export default function AppShell({ children }: AppShellProps) {
   }, [menuOpen]);
 
   return (
-    <div className="min-h-screen bg-[#050814] text-white">
+    <div className="min-h-screen w-full bg-[#050814] text-white overflow-x-hidden">
       {/* Top header bar */}
       <header className="border-b border-white/10 bg-[radial-gradient(circle_at_top,_#1a2b6b_0,_#050814_45%,_#020311_100%)]/95 backdrop-blur">
-        <div className="flex items-center justify-between px-4 py-4 md:px-10 lg:px-20">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-6 lg:px-8">
           {/* Left: logo + tiny tag */}
           <Link href="/" className="flex items-center gap-3">
             <img
               src="/veris-logo-wordmark.png"
               alt="Veris Automation"
-              className="w-[150px] h-auto md:w-[180px]"
+              className="h-auto w-[140px] md:w-[180px]"
             />
             <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[#AAB4C0] md:inline">
               Real Estate Agent
             </span>
           </Link>
 
-          {/* Right: nav + preview pill + user */}
-          <div className="flex items-center gap-6">
-            {/* Nav */}
-            <nav className="hidden items-center gap-4 text-xs text-[#AAB4C0] md:flex">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative px-1 transition-colors ${
-                    isActive(item.href)
-                      ? "text-white"
-                      : "hover:text-white/90"
-                  }`}
-                >
-                  {item.label}
-                  {isActive(item.href) && (
-                    <span className="pointer-events-none absolute inset-x-0 -bottom-1 h-[2px] rounded-full bg-gradient-to-r from-[#4D9FFF] via-[#7C5CFF] to-[#4D9FFF]" />
-                  )}
-                </Link>
-              ))}
-            </nav>
+          {/* Center: nav (always visible, wraps on mobile) */}
+          <nav className="flex flex-1 flex-wrap items-center justify-center gap-4 text-[11px] text-[#AAB4C0] md:justify-center">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`relative px-1 transition-colors ${
+                  isActive(item.href)
+                    ? "text-white"
+                    : "hover:text-white/90"
+                }`}
+              >
+                {item.label}
+                {isActive(item.href) && (
+                  <span className="pointer-events-none absolute inset-x-0 -bottom-1 h-[2px] rounded-full bg-gradient-to-r from-[#4D9FFF] via-[#7C5CFF] to-[#4D9FFF]" />
+                )}
+              </Link>
+            ))}
+          </nav>
 
-            {/* Preview pill + tagline */}
+          {/* Right: preview pill + user */}
+          <div className="flex items-center gap-4">
+            {/* Preview pill + tagline (hidden only on very small screens) */}
             <div className="hidden flex-col items-end text-right text-xs text-[#AAB4C0] sm:flex">
               <span className="inline-flex items-center rounded-full border border-white/20 px-3 py-1 text-[10px] uppercase tracking-[0.16em]">
                 Private agent preview
@@ -131,7 +131,6 @@ export default function AppShell({ children }: AppShellProps) {
                     </div>
                     <div className="my-1 h-px bg-white/5" />
 
-                    {/* Account */}
                     <Link
                       href="/account"
                       className="block px-3 py-2 text-[12px] text-[#E5E7EB] hover:bg-white/5"
@@ -140,7 +139,6 @@ export default function AppShell({ children }: AppShellProps) {
                       Account
                     </Link>
 
-                    {/* Billing */}
                     <Link
                       href="/billing"
                       className="block px-3 py-2 text-[12px] text-[#E5E7EB] hover:bg-white/5"
@@ -151,7 +149,6 @@ export default function AppShell({ children }: AppShellProps) {
 
                     <div className="my-1 h-px bg-white/5" />
 
-                    {/* Sign out */}
                     <button
                       type="button"
                       onClick={handleSignOut}
@@ -175,7 +172,9 @@ export default function AppShell({ children }: AppShellProps) {
       </header>
 
       {/* Page body */}
-      <main className="px-4 py-6 md:px-10 lg:px-20">{children}</main>
+      <main className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 lg:px-8">
+        {children}
+      </main>
     </div>
   );
 }
