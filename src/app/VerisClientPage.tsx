@@ -839,26 +839,27 @@ function SellerStudioSection(props: SellerStudioProps) {
   return (
     <section className="space-y-4">
       {/* Tab bar for Seller Studio tools */}
-      <div className="inline-flex flex-wrap rounded-full bg-white/5 p-1 text-xs">
-        <SellerTab
-          label="Pre-listing Emails"
-          description="3-part warm-up drip."
-          active={activeTool === "prelisting"}
-          onClick={() => setActiveTool("prelisting")}
-        />
-        <SellerTab
-          label="Listing Presentation"
-          description="Structured deck outline."
-          active={activeTool === "presentation"}
-          onClick={() => setActiveTool("presentation")}
-        />
-        <SellerTab
-          label="Objection Lab"
-          description="Live script + SMS + email."
-          active={activeTool === "objection"}
-          onClick={() => setActiveTool("objection")}
-        />
-      </div>
+      {/* Tab bar for Seller Studio tools */}
+  <div className="flex flex-col gap-2 text-xs sm:inline-flex sm:flex-row sm:flex-wrap sm:rounded-full sm:bg-white/5 sm:p-1">
+    <SellerTab
+      label="Pre-listing Emails"
+      description="3-part warm-up drip."
+      active={activeTool === "prelisting"}
+      onClick={() => setActiveTool("prelisting")}
+    />
+    <SellerTab
+      label="Listing Presentation"
+      description="Structured deck outline."
+      active={activeTool === "presentation"}
+      onClick={() => setActiveTool("presentation")}
+    />
+    <SellerTab
+      label="Objection Lab"
+      description="Live script + SMS + email."
+      active={activeTool === "objection"}
+      onClick={() => setActiveTool("objection")}
+    />
+  </div>
 
       {activeTool === "prelisting" && <PrelistingPanel {...props} />}
       {activeTool === "presentation" && <PresentationPanel {...props} />}
@@ -884,17 +885,29 @@ function SellerTab({
     <button
       type="button"
       onClick={onClick}
-      className={`mr-1 flex flex-col rounded-full px-4 py-1.5 text-left transition ${
-        active
-          ? "bg-[#1A73E8] text-white shadow-[0_0_16px_rgba(26,115,232,0.55)]"
-          : "text-[#AAB4C0] hover:text-white"
-      }`}
+      className={`
+        w-full sm:w-auto
+        flex flex-col
+        rounded-xl sm:rounded-full
+        px-4 py-2 sm:py-1.5
+        text-left
+        transition
+        border
+        ${
+          active
+            ? "bg-[#1A73E8] border-[#1A73E8] text-white shadow-[0_0_16px_rgba(26,115,232,0.55)]"
+            : "border-transparent text-[#AAB4C0] hover:text-white hover:bg-white/5"
+        }
+      `}
     >
       <span className="text-[11px] font-medium">{label}</span>
-      <span className="text-[10px] text-white/70">{description}</span>
+      <span className="text-[10px] text-white/70 sm:text-white/60">
+        {description}
+      </span>
     </button>
   );
 }
+
 
 // ----- Seller panels -----
 
