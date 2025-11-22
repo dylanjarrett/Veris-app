@@ -1,142 +1,175 @@
-import React from "react";
-import PageHeader from "@/components/layout/page-header";
+"use client";
 
-function IntelligenceTile({
-  label,
-  badge,
-  children,
-}: {
-  label: string;
-  badge?: string;
-  children: React.ReactNode;
-}) {
+import React, { useState } from "react";
+import PageHeader from "@/components/layout/page-header";
+import { generateAI } from "@/lib/intelligence";
+import { pushToCRM } from "@/lib/crm";
+
+// -----------------------------
+// Elegant UI card
+// -----------------------------
+function IntelligenceCard({ title, kicker, children }: any) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-slate-700/70 bg-slate-950/80 px-5 py-4 shadow-[0_0_40px_rgba(15,23,42,0.85)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-amber-100/50">
-      <div className="absolute inset-0 -z-10 opacity-0 blur-3xl transition-opacity duration-300 group-hover:opacity-40 bg-[radial-gradient(circle_at_top,_rgba(248,250,252,0.16),transparent_55%)]" />
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1.5">
-          <p className="text-[11px] font-semibold tracking-[0.16em] text-amber-100/80 uppercase">
-            {label}
-          </p>
-          <div className="text-xs leading-relaxed text-slate-200/85">
-            {children}
-          </div>
-        </div>
-        {badge && (
-          <span className="mt-0.5 inline-flex items-center rounded-full border border-amber-100/40 bg-amber-50/5 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-amber-100">
-            {badge}
-          </span>
-        )}
-      </div>
+    <div className="group relative overflow-hidden rounded-2xl border border-slate-700/70 bg-slate-950/80 p-6 shadow-[0_0_40px_rgba(15,23,42,0.85)] transition-all hover:border-amber-100/40">
+      <div className="absolute inset-0 -z-10 opacity-0 blur-3xl group-hover:opacity-40 bg-[radial-gradient(circle_at_top,_rgba(248,250,252,0.14),transparent_55%)] transition-opacity" />
+      {kicker && (
+        <p className="text-[11px] font-semibold tracking-[0.18em] text-amber-100/70 uppercase mb-2">
+          {kicker}
+        </p>
+      )}
+      <h2 className="text-xl font-semibold tracking-tight text-slate-50 mb-4">
+        {title}
+      </h2>
+      {children}
     </div>
   );
 }
 
+// -----------------------------
+// Textarea with elegant styling
+// -----------------------------
+function InputBox({ label, value, onChange }: any) {
+  return (
+    <div className="mb-4">
+      <p className="text-sm font-medium text-slate-200 mb-1">{label}</p>
+      <textarea
+        rows={5}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded-xl border border-slate-700 bg-slate-900/40 p-3 text-sm text-slate-100 shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-200/30 focus:border-amber-100"
+      />
+    </div>
+  );
+}
+
+// -----------------------------
+// MAIN COMPONENT
+// -----------------------------
 export default function IntelligencePage() {
+  const [propertyNotes, setPropertyNotes] = useState("");
+  const [clientType, setClientType] = useState("buyer");
+  const [tone, setTone] = useState("professional");
+  const [output, setOutput] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Run AI engine
+  async function runAI(mode: string) {
+    setLoading(true);
+    setOutput("");
+
+    const result = await generateAI({
+      mode,
+      propertyNotes,
+      clientType,
+      tone,
+    });
+
+    setOutput(result?.text || "No output generated.");
+    setLoading(false);
+  }
+
+  // Push result to CRM
+  async function handlePushToCRM() {
+    if (!output) return;
+    await pushToCRM({
+      raw: propertyNotes,
+      processed: output,
+      type: clientType,
+    });
+    alert("Saved to CRM!");
+  }
+
   return (
     <div className="space-y-8">
       <PageHeader
         eyebrow="INTELLIGENCE"
         title="Listing Intelligence & Studios"
-        subtitle="Turn raw notes into ready-to-use listing copy, social posts, emails, and talking points for both buyers and sellers."
+        subtitle="Turn raw notes into ready-to-use listing copy, scripts, briefs, and marketing assets built for both buyers and sellers."
       />
 
-      {/* Core engine / seller / buyer */}
-      <div className="grid gap-5 lg:grid-cols-3">
-        <IntelligenceTile label="Core engine" badge="Active workflow">
-          MLS description, bullets, social captions, email copy, and talking
-          points from a single set of property details.
-        </IntelligenceTile>
+      {/* INPUT SECTION */}
+      <IntelligenceCard
+        kicker="Listing Intelligence Input"
+        title="Paste your full property notes below"
+      >
+        <InputBox
+          label="Property notes"
+          value={propertyNotes}
+          onChange={setPropertyNotes}
+        />
 
-        <IntelligenceTile label="Seller Studio" badge="In beta">
-          Pre-listing, presentation language, and objection handling tuned for
-          listing appointments and price talks.
-        </IntelligenceTile>
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <div>
+            <label className="text-xs text-slate-200/70">Client Type</label>
+            <select
+              value={clientType}
+              onChange={(e) => setClientType(e.target.value)}
+              className="w-full mt-1 rounded-lg border border-slate-700 bg-slate-900/40 p-2 text-sm text-slate-100"
+            >
+              <option value="buyer">Buyer</option>
+              <option value="seller">Seller</option>
+              <option value="general">General</option>
+            </select>
+          </div>
 
-        <IntelligenceTile label="Buyer Studio" badge="Coming soon">
-          Tours, offers, and follow-up summaries that highlight key features,
-          deal terms, and nurture messages for your best buyers.
-        </IntelligenceTile>
-      </div>
-
-      {/* Input + preview */}
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-        {/* Input card */}
-        <div className="relative overflow-hidden rounded-2xl border border-slate-700/70 bg-slate-950/80 px-6 py-5 shadow-[0_0_40px_rgba(15,23,42,0.85)]">
-          <div className="pointer-events-none absolute inset-0 -z-10 opacity-40 blur-3xl bg-[radial-gradient(circle_at_top_left,_rgba(248,250,252,0.16),transparent_55%)]" />
-          <p className="text-[11px] font-semibold tracking-[0.18em] text-amber-100/80 uppercase">
-            Listing intelligence input
-          </p>
-          <h2 className="mt-2 text-sm font-medium text-slate-50">
-            Paste your full property notes: address, beds/baths, upgrades,
-            finishes, neighborhood context, and anything you’d say in a listing
-            appointment.
-          </h2>
-          <label className="mt-4 block text-[11px] font-semibold text-slate-200/85">
-            Property details
-          </label>
-          <textarea
-            className="mt-2 h-44 w-full resize-none rounded-xl border border-slate-600 bg-slate-900/60 px-3 py-2 text-xs text-slate-100 outline-none ring-0 placeholder:text-slate-500 focus:border-amber-100/70 focus:bg-slate-900 focus:ring-2 focus:ring-amber-100/40"
-            placeholder="Ex: 1234 Ocean View Dr · 3 bed · 2.5 bath · remodeled kitchen with quartz counters, wide-plank flooring, vaulted ceilings, and ocean views from the primary suite. Walkable to parks, coffee, and waterfront trail…"
-          />
-          <div className="mt-3 flex items-center justify-between gap-4 text-[11px] text-slate-300/85">
-            <p>
-              Once wired to your AI backend, this will send a structured request
-              and return a full listing pack tuned to your market.
-            </p>
-            <button className="inline-flex items-center justify-center rounded-full border border-amber-100/70 bg-amber-50/10 px-4 py-1.5 font-semibold text-amber-100 shadow-[0_0_30px_rgba(248,250,252,0.22)] transition hover:bg-amber-50/20 hover:border-amber-100">
-              Generate listing pack
-            </button>
+          <div>
+            <label className="text-xs text-slate-200/70">Tone</label>
+            <select
+              value={tone}
+              onChange={(e) => setTone(e.target.value)}
+              className="w-full mt-1 rounded-lg border border-slate-700 bg-slate-900/40 p-2 text-sm text-slate-100"
+            >
+              <option value="professional">Professional</option>
+              <option value="casual">Casual</option>
+              <option value="luxury">Luxury</option>
+              <option value="friendly">Friendly</option>
+            </select>
           </div>
         </div>
 
-        {/* Output preview */}
-        <div className="relative overflow-hidden rounded-2xl border border-slate-700/70 bg-gradient-to-b from-slate-900/70 to-slate-950 px-6 py-5 shadow-[0_0_40px_rgba(15,23,42,0.9)]">
-          <div className="pointer-events-none absolute inset-0 -z-10 opacity-50 blur-3xl bg-[radial-gradient(circle_at_top,_rgba(248,250,252,0.2),transparent_55%)]" />
-          <p className="text-[11px] font-semibold tracking-[0.18em] text-amber-100/80 uppercase">
-            Output preview
-          </p>
-          <p className="mt-2 text-xs text-slate-200/90">
-            This is a static preview. When the API is wired, this panel will
-            show the actual generated copy for each channel.
-          </p>
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={() => runAI("listing")}
+            className="rounded-xl bg-amber-100/20 border border-amber-200/40 px-4 py-2 text-sm font-medium text-amber-100 shadow hover:bg-amber-100/30"
+          >
+            Generate Listing Pack
+          </button>
 
-          <div className="mt-4 space-y-4 text-xs text-slate-100/90">
-            <div>
-              <p className="font-semibold text-amber-100/80">MLS description</p>
-              <p className="mt-1 leading-relaxed text-slate-200/90">
-                Modern coastal home with open-concept living room, remodeled
-                kitchen, and an oversized deck overlooking the ocean. Natural
-                light, wide-plank flooring, and vaulted ceilings make every
-                space feel bright and airy…
-              </p>
-            </div>
+          <button
+            onClick={() => runAI("seller")}
+            className="rounded-xl bg-slate-800/50 border border-slate-600 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800/70"
+          >
+            Seller Studio Output
+          </button>
 
-            <div>
-              <p className="font-semibold text-amber-100/80">
-                Short-form bullets
-              </p>
-              <ul className="mt-1 space-y-0.5 text-slate-200/90">
-                <li>• 3 bed · 2.5 bath with upgraded kitchen and walk-in pantry</li>
-                <li>• Light-filled primary suite with ocean views and deck</li>
-                <li>
-                  • Minutes to shoreline trail, coffee shops, and schools
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <p className="font-semibold text-amber-100/80">Social caption</p>
-              <p className="mt-1 leading-relaxed text-slate-200/90">
-                Just listed 🌊 Modern coastal living in the heart of Edgewood —
-                vaulted ceilings, remodeled kitchen, and an indoor-outdoor flow
-                that’s built for gatherings. DM “OCEAN VIEW” for details or a
-                private tour.
-              </p>
-            </div>
-          </div>
+          <button
+            onClick={() => runAI("buyer")}
+            className="rounded-xl bg-slate-800/50 border border-slate-600 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800/70"
+          >
+            Buyer Studio Output
+          </button>
         </div>
-      </div>
+      </IntelligenceCard>
+
+      {/* OUTPUT SECTION */}
+      <IntelligenceCard title="Output Preview">
+        <div className="min-h-[200px] whitespace-pre-wrap text-slate-100 text-sm">
+          {loading ? (
+            <p className="animate-pulse text-amber-100">Generating…</p>
+          ) : (
+            output || "Run an AI workflow to see results here."
+          )}
+        </div>
+
+        {output && (
+          <button
+            onClick={handlePushToCRM}
+            className="mt-5 rounded-full border border-amber-100/60 bg-amber-50/5 px-4 py-1.5 text-xs font-medium text-amber-100 hover:bg-amber-50/10"
+          >
+            Save to CRM
+          </button>
+        )}
+      </IntelligenceCard>
     </div>
   );
 }
